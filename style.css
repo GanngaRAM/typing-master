@@ -59,3 +59,58 @@ color: #777e88;
 font-weight: 500;
 animation: slide var(--speed) linear forwards;
 }
+.word.active { color: #f2f4f7; }
+.word.correct { color: #69d18f; }
+
+.input-wrap {
+position: absolute;
+left: 0;
+right: 0;
+bottom: 48px;
+display: flex;
+justify-content: center;
+}
+
+input {
+width: min(500px, 90%);
+height: 58px;
+border: none;
+border-bottom: 1px solid #343a43;
+outline: none;
+background: transparent;
+color: #fff;
+font-size: 22px;
+text-align: center;
+font-family: inherit;
+transition: border-color 0.2s;
+}
+
+input:focus { border-color: #f2f4f7; }
+input::placeholder { color: #3f444c; }
+
+footer {
+height: 80px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+border-top: 1px solid #1c2026;
+}
+
+button {
+border: 1px solid #292e35;
+background: transparent;
+color: #8b929c;
+padding: 9px 16px;
+border-radius: 6px;
+font-family: inherit;
+font-size: 12px;
+cursor: pointer;
+transition: 0.2s;
+}
+
+button:hover { color: #fff; border-color: #555c66; }
+
+@keyframes slide {
+from { left: 100%; }
+to { left: -20%; }
+}

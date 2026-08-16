@@ -114,3 +114,21 @@ button:hover { color: #fff; border-color: #555c66; }
 from { left: 100%; }
 to { left: -20%; }
 }
+@media (max-width: 600px) {
+.top { height: 75px; }
+.stats { gap: 15px; }
+.stats span { font-size: 9px; }
+.stats strong { font-size: 13px; }
+.play-area { min-height: 450px; }
+.word { font-size: 21px; }
+input { font-size: 18px; }
+}
+
+@media (max-width: 420px) {
+.game { width: 94%; }
+.brand { font-size: 18px; }
+.stats { gap: 10px; }
+.stats div { gap: 3px; }
+.input-wrap { bottom: 35px; }
+input { width: 95%; }
+}

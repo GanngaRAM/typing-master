@@ -113,3 +113,50 @@ const minutes = (Date.now() - startTime) / 60000;
 const wpm = Math.round((correct / 5) / minutes);
 wpmElement.textContent = Number.isFinite(wpm) ? wpm : 0;
 }
+function startGame() {
+clearInterval(gameTimer);
+
+score = 0;
+streak = 0;
+typed = 0;
+correct = 0;
+speed = 11;
+activeWord = null;
+startTime = null;
+
+wordsContainer.innerHTML = "";
+input.value = "";
+
+for (let i = 0; i < 4; i++) {
+createWord();
+}
+
+gameTimer = setInterval(() => {
+const currentWords = document.querySelectorAll(".word");
+
+if (currentWords.length < 5) {
+createWord();
+}
+
+updateWPM();
+}, 1200);
+
+updateStats();
+input.focus();
+}
+
+input.addEventListener("input", checkInput);
+
+input.addEventListener("keydown", event => {
+if (event.key === " ") {
+event.preventDefault();
+}
+});
+
+restartButton.addEventListener("click", startGame);
+
+playArea.addEventListener("click", () => {
+input.focus();
+});
+
+startGame();

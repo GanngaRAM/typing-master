@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeRush</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="game">
+        <header class="top">
+            <div class="brand">TypeRush</div>
+            <div class="stats">
+                <div><span>WPM</span><strong id="wpm">0</strong></div>
+                <div><span>Accuracy</span><strong id="accuracy">100%</strong></div>
+                <div><span>Score</span><strong id="score">0</strong></div>
+            </div>
+        </header>
+        <section class="play-area" id="playArea">
+            <div class="words" id="words"></div>
+            <div class="input-wrap">
+                <input id="input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="start typing...">
+            </div>
+        </section>
+        <footer>
+            <div class="streak">
+                <span>Streak</span>
+                <strong id="streak">0</strong>
+            </div>
+            <button id="restart">Restart</button>
+        </footer>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>

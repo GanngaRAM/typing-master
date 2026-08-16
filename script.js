@@ -1,10 +1,10 @@
 const words = [
-"apple", "river", "cloud", "light", "stone", "dream", "green",
-"quick", "house", "world", "night", "water", "music", "space",
-"plant", "fire", "ocean", "pixel", "sound", "storm", "shadow",
-"bright", "future", "simple", "random", "window", "coffee",
-"forest", "summer", "winter", "orange", "silver", "yellow",
-"rocket", "energy", "circle", "camera", "memory", "travel"
+    "apple", "river", "cloud", "light", "stone", "dream", "green",
+    "quick", "house", "world", "night", "water", "music", "space",
+    "plant", "fire", "ocean", "pixel", "sound", "storm", "shadow",
+    "bright", "future", "simple", "random", "window", "coffee",
+    "forest", "summer", "winter", "orange", "silver", "yellow",
+    "rocket", "energy", "circle", "camera", "memory", "travel"
 ];
 
 const wordsContainer = document.getElementById("words");
@@ -26,137 +26,166 @@ let startTime = null;
 let gameTimer = null;
 
 function randomWord() {
-return words[Math.floor(Math.random() * words.length)];
+    return words[Math.floor(Math.random() * words.length)];
 }
 
 function createWord() {
-const element = document.createElement("div");
-element.className = "word";
-element.textContent = randomWord();
-const top = Math.floor(Math.random() * 55) + 8;
-const duration = speed + Math.random() * 2;
-element.style.setProperty("--top", `${top}%`);
-element.style.setProperty("--speed", `${duration}s`);
-wordsContainer.appendChild(element);
-if (!activeWord) {
-activeWord = element;
-element.classList.add("active");
-}
+    const element = document.createElement("div");
+    element.className = "word";
+    element.textContent = randomWord();
+
+    const top = Math.floor(Math.random() * 55) + 8;
+    const duration = speed + Math.random() * 2;
+
+    element.style.setProperty("--top", `${top}%`);
+    element.style.setProperty("--speed", `${duration}s`);
+
+    element.addEventListener("animationend", () => {
+        if (element === activeWord) {
+            streak = 0;
+            activeWord = null;
+            input.value = "";
+            setActiveWord();
+            updateStats();
+        }
+
+        element.remove();
+    });
+
+    wordsContainer.appendChild(element);
+
+    if (!activeWord) {
+        activeWord = element;
+        element.classList.add("active");
+    }
 }
 
 function setActiveWord() {
-const visibleWords = [...document.querySelectorAll(".word")];
-if (!visibleWords.length) {
-createWord();
-return;
-}
-activeWord = visibleWords[0];
-activeWord.classList.add("active");
+    const visibleWords = [...document.querySelectorAll(".word")];
+
+    if (!visibleWords.length) {
+        createWord();
+        return;
+    }
+
+    activeWord = visibleWords[0];
+    activeWord.classList.add("active");
 }
 
-function updateStats() {
-scoreElement.textContent = score;
-streakElement.textContent = streak;
-}
 function checkInput() {
-if (!activeWord) return;
+    if (!activeWord) return;
 
-const value = input.value.trim().toLowerCase();
-const target = activeWord.textContent.toLowerCase();
+    const value = input.value.trim().toLowerCase();
+    const target = activeWord.textContent.toLowerCase();
 
-if (!startTime) startTime = Date.now();
+    if (!startTime) {
+        startTime = Date.now();
+    }
 
-if (value === target) {
-typed += target.length;
-correct += target.length;
-score += 10 + streak;
-streak++;
+    if (value === target) {
+        typed += target.length;
+        correct += target.length;
+        score += 10 + streak;
+        streak++;
 
-activeWord.classList.remove("active");
-activeWord.classList.add("correct");
-activeWord.style.animationPlayState = "paused";
+        activeWord.classList.remove("active");
+        activeWord.classList.add("correct");
+        activeWord.style.animationPlayState = "paused";
 
-setTimeout(() => {
-if (activeWord) {
-activeWord.remove();
-activeWord = null;
-input.value = "";
-setActiveWord();
-}
-}, 100);
+        setTimeout(() => {
+            if (activeWord) {
+                activeWord.remove();
+                activeWord = null;
+                input.value = "";
+                setActiveWord();
+            }
+        }, 100);
 
-updateStats();
-}
+        if (score > 0 && score % 100 === 0) {
+            speed = Math.max(6, speed - 0.4);
+        }
 
-updateAccuracy();
+        updateStats();
+    }
+
+    updateAccuracy();
 }
 
 function updateAccuracy() {
-const total = typed + input.value.length;
+    const total = typed + input.value.length;
 
-if (!total) {
-accuracyElement.textContent = "100%";
-return;
-}
+    if (!total) {
+        accuracyElement.textContent = "100%";
+        return;
+    }
 
-const accuracy = Math.round((correct / total) * 100);
-accuracyElement.textContent = `${Math.max(0, accuracy)}%`;
+    const accuracy = Math.round((correct / total) * 100);
+    accuracyElement.textContent = `${Math.max(0, accuracy)}%`;
 }
 
 function updateWPM() {
-if (!startTime) {
-wpmElement.textContent = "0";
-return;
+    if (!startTime) {
+        wpmElement.textContent = "0";
+        return;
+    }
+
+    const minutes = (Date.now() - startTime) / 60000;
+    const wpm = Math.round((correct / 5) / minutes);
+
+    wpmElement.textContent = Number.isFinite(wpm) ? wpm : 0;
 }
 
-const minutes = (Date.now() - startTime) / 60000;
-const wpm = Math.round((correct / 5) / minutes);
-wpmElement.textContent = Number.isFinite(wpm) ? wpm : 0;
+function updateStats() {
+    scoreElement.textContent = score;
+    streakElement.textContent = streak;
+    updateAccuracy();
+    updateWPM();
 }
+
 function startGame() {
-clearInterval(gameTimer);
+    clearInterval(gameTimer);
 
-score = 0;
-streak = 0;
-typed = 0;
-correct = 0;
-speed = 11;
-activeWord = null;
-startTime = null;
+    score = 0;
+    streak = 0;
+    typed = 0;
+    correct = 0;
+    speed = 11;
+    activeWord = null;
+    startTime = null;
 
-wordsContainer.innerHTML = "";
-input.value = "";
+    wordsContainer.innerHTML = "";
+    input.value = "";
 
-for (let i = 0; i < 4; i++) {
-createWord();
-}
+    for (let i = 0; i < 4; i++) {
+        createWord();
+    }
 
-gameTimer = setInterval(() => {
-const currentWords = document.querySelectorAll(".word");
+    gameTimer = setInterval(() => {
+        const currentWords = document.querySelectorAll(".word");
 
-if (currentWords.length < 5) {
-createWord();
-}
+        if (currentWords.length < 5) {
+            createWord();
+        }
 
-updateWPM();
-}, 1200);
+        updateWPM();
+    }, 1200);
 
-updateStats();
-input.focus();
+    updateStats();
+    input.focus();
 }
 
 input.addEventListener("input", checkInput);
 
 input.addEventListener("keydown", event => {
-if (event.key === " ") {
-event.preventDefault();
-}
+    if (event.key === " ") {
+        event.preventDefault();
+    }
 });
 
 restartButton.addEventListener("click", startGame);
 
 playArea.addEventListener("click", () => {
-input.focus();
+    input.focus();
 });
 
 startGame();
